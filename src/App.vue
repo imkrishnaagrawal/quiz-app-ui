@@ -1,17 +1,18 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+
+  <div id="app" class="cantainer">
+    <link rel="stylesheet" href="//cdn.materialdesignicons.com/2.0.46/css/materialdesignicons.min.css">
+    <Container />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import HelloWorld from './components/HelloWorld.vue';
+import Container from './components/Container.vue';
 
 @Component({
   components: {
-    HelloWorld,
+    Container,
   },
 })
 export default class App extends Vue {}
@@ -22,8 +23,12 @@ export default class App extends Vue {}
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  background: #eaedf0;
+  color: #8a8f8f;
+  padding-top: 20px;
+  font: Roboto;
+  font-size: 1.2em;
+  min-height: 100vh;
 }
+
 </style>
