@@ -1,53 +1,97 @@
 <template>
   <div class="container">
-      <Question  :key="currentQuestion.questionNo" :question="currentQuestion" :currentQuestion="currentQuestionNo" :next="next" :prev="prev"/>
+    <label>Section </label>
+    <select v-model="currentSection">
+      <option>0</option>
+      <option>1</option>
+      <option>2</option>
+      <option>3</option>
+      <option>4</option>
+      <option>5</option>
+    </select>
+    <Question
+      :key="currentQuestion.questionNo"
+      :question="currentQuestion"
+      :currentQuestion="currentQuestionNo"
+      :next="next"
+      :prev="prev"
+    />
   </div>
-
 </template>
 
 <script lang="ts">
-import Question from './Question.vue';
-import { state } from '../store';
-import { Component, Vue } from 'vue-property-decorator';
+import Question from "./Question.vue";
+import { state } from "../store";
+import { Component,Watch,  Vue } from "vue-property-decorator";
 
 @Component({
   components: {
-   Question,
+    Question,
   },
 })
 export default class Container extends Vue {
   private questions = state.questions;
-  currentQuestionNo= 0;
-  currentQuestion = this.questions[0] ;
-  mounted(){
-   this.currentQuestionNo =  parseInt(localStorage.getItem('currentQuestionNo') || '0' );
+  currentQuestionNo = 0;
+  currentQuestion = this.questions[0];
+  currentRoute = -1;
+  currentSection = 0;
+  sectionSize = 65;
+
+  @Watch('currentSection')
+  onPropertyChanged(value: string, oldValue: string) {
+      localStorage.setItem(
+      "currentSection",
+      value.toString()
+    );
+  }
+  mounted() {
+    console.log(parseInt(window.location.pathname.replace("/", "")) || -1);
+    this.currentRoute =
+      parseInt(window.location.pathname.replace("/", "")) - 1 || -1;
+
+    this.currentSection = parseInt(localStorage.getItem("currentSection") || "0");
+    this.currentQuestionNo =
+      this.currentRoute != -1
+        ? this.currentRoute
+        : parseInt(localStorage.getItem("currentQuestionNo") || "0") +
+          this.sectionSize * this.currentSection;
   }
 
-  update(){
-    this.currentQuestion = this.questions[this.currentQuestionNo];
+  update() {
+    this.currentQuestion = this.questions[
+      this.currentQuestionNo + this.sectionSize * this.currentSection
 
-    localStorage.setItem('currentQuestionNo', this.currentQuestionNo.toString());
+    ];
+
+    localStorage.setItem(
+      "currentQuestionNo",
+      this.currentQuestionNo.toString()
+    );
+    console.log(
+      "current questoin",
+      this.currentQuestionNo + this.sectionSize * this.currentSection
+    );
   }
 
-  next(){
-    if(this.currentQuestionNo < this.questions.length - 1){
+  next() {
+    if (this.currentQuestionNo < this.questions.length - 1) {
       this.currentQuestionNo += 1;
-    }else{
+    } else {
       this.currentQuestionNo = 0;
     }
     this.update();
   }
 
-  prev(){
-    if(this.currentQuestionNo > 0){
+  prev() {
+    if (this.currentQuestionNo > 0) {
       this.currentQuestionNo -= 1;
-    }else{
-      this.currentQuestionNo = (this.questions.length-1) - this.currentQuestionNo;
-      console.log(this.questions.length)
+    } else {
+      this.currentQuestionNo =
+        this.questions.length - 1 - this.currentQuestionNo;
+      console.log(this.questions.length);
     }
     this.update();
   }
-
 }
 </script>
 
@@ -66,5 +110,13 @@ li {
 }
 a {
   color: #42b983;
+}
+::v-deep select {
+  width: 50px;
+  height: 30px;
+
+  &:before {
+    content: "Read this: ";
+  }
 }
 </style>

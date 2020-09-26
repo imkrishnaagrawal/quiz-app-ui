@@ -164,6 +164,13 @@ a {
   color: white;
   margin-right: 12px;
 }
+::v-deep pre {
+  h2{
+  font-size: 1em !important;
+  margin: 0px !important;
+  padding: 0px !important;
+}
+}
 ::v-deep .eli {
   color: rgb(122, 122, 122);
   // background:red;;
