@@ -12,9 +12,11 @@
     <Question
       :key="currentQuestion.questionNo"
       :question="currentQuestion"
-      :currentQuestion="currentQuestionNo"
+      :currentQuestionNo="currentQuestionNo"
       :next="next"
       :prev="prev"
+      :currentSection="currentSection"
+      :sectionSize="sectionSize"
     />
   </div>
 </template>
@@ -38,7 +40,7 @@ export default class Container extends Vue {
   sectionSize = 65;
 
   @Watch('currentSection')
-  onPropertyChanged(value: string, oldValue: string) {
+  onPropertyChanged(value: string) {
       localStorage.setItem(
       "currentSection",
       value.toString()
@@ -60,17 +62,13 @@ export default class Container extends Vue {
   update() {
     this.currentQuestion = this.questions[
       this.currentQuestionNo + this.sectionSize * this.currentSection
-
     ];
 
     localStorage.setItem(
       "currentQuestionNo",
       this.currentQuestionNo.toString()
     );
-    console.log(
-      "current questoin",
-      this.currentQuestionNo + this.sectionSize * this.currentSection
-    );
+
   }
 
   next() {

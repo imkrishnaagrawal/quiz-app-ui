@@ -2,12 +2,12 @@
   <div class="px-5">
     <h3 class="title columns is-vcentered">
       <div class="column">
-        Question {{currentQuestion + 1}}
+        Question {{currentQuestionNo + 1}}
         <span class="tag is-medium is-primary">{{isMultiSelect? 'Select Multiple': 'Select One'}}</span>
       </div>
       <div class="column has-text-right">
         <button class="button is-dark" @click="prev()">Prev</button>
-        <button class="button is-dark" @click="next()">Next</button>
+        <button class="button is-dark" :disabled="!submited" @click="next()">Next</button>
         <button class="button is-dark" @click="submit(question)">{{ submited ? 'Explain' :'Submit'}}</button>
       </div>
     </h3>
@@ -47,7 +47,10 @@ export default class Question extends Vue {
   @Prop({ required: true }) private question!: QuestionModel;
   @Prop() next!: Function;
   @Prop() prev!: Function;
-  @Prop() currentQuestion!: number;
+  @Prop() currentQuestionNo!: number;
+  @Prop() currentSection!: number;
+  @Prop() sectionSize!: number;
+
   isMultiSelect = false;
   isImageModalActive = false;
   activeIndex: Record<number, boolean> = {};
@@ -55,6 +58,8 @@ export default class Question extends Vue {
   isCorrectAnswer = true;
 
   mounted() {
+    this.submited = localStorage.getItem((this.currentQuestionNo + this.sectionSize * this.currentSection).toString())?.toLowerCase() == 'true';
+
     this.isMultiSelect =
       this.question.options.filter((x) => {
         return x.isCorrect;
@@ -85,6 +90,7 @@ export default class Question extends Vue {
 
   submit() {
     if (!this.submited) {
+      localStorage.setItem((this.currentQuestionNo + this.sectionSize * this.currentSection).toString(), 'true');
       this.submited = true;
       this.question.options.forEach((option, index) => {
         if (this.activeIndex[index] == !option.isCorrect) {
